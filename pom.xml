@@ -17,6 +17,8 @@
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
     <quarkus.platform.version>1.8.1.Final</quarkus.platform.version>
     <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
+    <quarkus.container-image.registry>quay.io</quarkus.container-image.registry>
+    <quarkus.container-image.group>jritter</quarkus.container-image.group>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -139,6 +141,7 @@
       </build>
       <properties>
         <quarkus.package.type>native</quarkus.package.type>
+        <quarkus.container-image.name>color-service-native</quarkus.container-image.name>
       </properties>
     </profile>
   </profiles>
