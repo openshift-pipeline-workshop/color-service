@@ -5,8 +5,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import io.riju.demo.entities.Color;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.metrics.annotation.Counted;
+
+import io.riju.demo.entities.Color;
 
 
 @Path("/color")
@@ -20,6 +22,7 @@ public class ColorResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Counted(name = "color", description = "How many colors we've given.")
     public Color color() {
         return new Color(colorName, hexValue);
     }

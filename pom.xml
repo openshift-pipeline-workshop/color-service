@@ -5,6 +5,11 @@
   <groupId>io.riju.demo</groupId>
   <artifactId>color-service</artifactId>
   <version>1.0.0-SNAPSHOT</version>
+  <scm>
+		<url>https://github.com/jritter/color-service.git</url>
+		<connection>scm:git:https://github.com/jritter/color-service.git</connection>
+    <tag>HEAD</tag>
+  </scm>
   <properties>
     <compiler-plugin.version>3.8.1</compiler-plugin.version>
     <maven.compiler.parameters>true</maven.compiler.parameters>
@@ -106,6 +111,20 @@
           </systemPropertyVariables>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.sonarsource.scanner.maven</groupId>
+        <artifactId>sonar-maven-plugin</artifactId>
+        <version>3.7.0.1746</version>
+      </plugin>
+      <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>3.0.0-M1</version>
+          <configuration>
+              <tagBase>https://host:port/abc/xyz/tag</tagBase>
+              <releaseProfiles>release</releaseProfiles>
+          </configuration>
+      </plugin>               
     </plugins>
   </build>
   <profiles>
