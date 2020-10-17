@@ -13,7 +13,7 @@ import io.riju.demo.entities.Version;
 @Path("/version")
 public class VersionResource {
 
-    @ConfigProperty(name = "quarkus.application.version")
+    @ConfigProperty(name = "quarkus.application.version", defaultValue = "N/A")
     String versionString;
 
     @GET
