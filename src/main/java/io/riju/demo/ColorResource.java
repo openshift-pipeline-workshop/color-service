@@ -17,13 +17,10 @@ public class ColorResource {
     @ConfigProperty(name = "color-service.color", defaultValue="red")
     String colorName;
 
-    @ConfigProperty(name = "color-service.hexValue", defaultValue="#E53E3E")
-    String hexValue;
-
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Counted(name = "color", description = "How many colors we've given.")
     public Color color() {
-        return new Color(colorName, hexValue);
+        return new Color(colorName);
     }
 }
