@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.given;
 
 @QuarkusTest
-public class ColorResourceTest {
+class ColorResourceTest {
 
     @Test
-    public void testColorEndpoint() {
+    void testColorEndpoint() {
         given()
           .when().get("/color")
           .then()
