@@ -20,13 +20,16 @@ public class ColorResource {
     @ConfigProperty(name = "color-service.color", defaultValue="red")
     String colorName;
 
+    @ConfigProperty(name = "quarkus.application.version", defaultValue = "N/A")
+    String versionString;
+
     @Inject
     MetricRegistry metricRegistry;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Color color() {
-        Counter counter = metricRegistry.counter("io_riju_demo_ColorResource_colorCalls_total", new Tag("color", colorName));
+        Counter counter = metricRegistry.counter("io_riju_demo_ColorResource_colorCalls_total", new Tag("color", colorName), new Tag("version", versionString));
         counter.inc();
         return new Color(colorName);
     }
