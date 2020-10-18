@@ -26,7 +26,7 @@ public class ColorResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Color color() {
-        Counter counter = metricRegistry.counter("color_total", new Tag("color", colorName));
+        Counter counter = metricRegistry.counter("io_riju_demo_ColorResource_colorCalls_total", new Tag("color", colorName));
         counter.inc();
         return new Color(colorName);
     }
