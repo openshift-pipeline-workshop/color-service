@@ -1,10 +1,14 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.riju.demo</groupId>
   <artifactId>color-service</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.2-SNAPSHOT</version>
+  <scm>
+    <connection>scm:git:https://github.com/jritter/color-service.git</connection>
+    <url>https://github.com/jritter/color-service.git</url>
+    <tag>HEAD</tag>
+  </scm>
   <properties>
     <compiler-plugin.version>3.8.1</compiler-plugin.version>
     <maven.compiler.parameters>true</maven.compiler.parameters>
@@ -12,10 +16,12 @@
     <maven.compiler.target>11</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <quarkus-plugin.version>1.8.1.Final</quarkus-plugin.version>
+    <quarkus-plugin.version>1.9.0.Final</quarkus-plugin.version>
+    <quarkus.container-image.group>jritter</quarkus.container-image.group>
+    <quarkus.container-image.registry>quay.io</quarkus.container-image.registry>
     <quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-    <quarkus.platform.version>1.8.1.Final</quarkus.platform.version>
+    <quarkus.platform.version>1.9.0.Final</quarkus.platform.version>
     <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
   </properties>
   <dependencyManagement>
@@ -71,7 +77,11 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-kubernetes</artifactId>
+      <artifactId>quarkus-rest-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-opentracing</artifactId>
     </dependency>
   </dependencies>
   <build>
@@ -102,6 +112,19 @@
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
             <maven.home>${maven.home}</maven.home>
           </systemPropertyVariables>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.sonarsource.scanner.maven</groupId>
+        <artifactId>sonar-maven-plugin</artifactId>
+        <version>3.7.0.1746</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>3.0.0-M1</version>
+        <configuration>
+          <tagBase>https://host:port/abc/xyz/tag</tagBase>
+          <releaseProfiles>release</releaseProfiles>
         </configuration>
       </plugin>
     </plugins>
@@ -138,6 +161,7 @@
         </plugins>
       </build>
       <properties>
+        <quarkus.container-image.name>color-service-native</quarkus.container-image.name>
         <quarkus.package.type>native</quarkus.package.type>
       </properties>
     </profile>
