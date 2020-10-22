@@ -9,7 +9,6 @@ projects:
       type: git
       branch: develop
       location: "https://github.com/jritter/color-service.git"
-      sparseCheckoutDir: .m2
 components:
   - type: chePlugin
     id: redhat/quarkus-java11/latest
