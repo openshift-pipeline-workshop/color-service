@@ -17,7 +17,7 @@ import io.riju.demo.entities.Color;
 @Path("/color")
 public class ColorResource {
 
-    @ConfigProperty(name = "color-service.color", defaultValue="red")
+    @ConfigProperty(name = "color-service.color", defaultValue="green")
     String colorName;
 
     @ConfigProperty(name = "quarkus.application.version", defaultValue = "N/A")
