@@ -33,6 +33,8 @@ components:
     endpoints:
       - name: quarkus-development-server
         port: 8080
+  - id: redhat/vscode-yaml/latest
+    type: chePlugin
 commands:
   - name: 1. Package the application
     actions:

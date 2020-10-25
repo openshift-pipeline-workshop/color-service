@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: color-service
+    app.kubernetes.io/component: color-service
+    app.kubernetes.io/instance: color-service
+    app.kubernetes.io/name: color-service
+    app.kubernetes.io/part-of: color-service
+    app.openshift.io/runtime: quarkus
+    app.openshift.io/runtime-version: latest
+  name: color-service
+spec:
+  ports:
+  - name: 8080-tcp
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: color-service
+    deploymentconfig: color-service
+  sessionAffinity: None
+  type: ClusterIP

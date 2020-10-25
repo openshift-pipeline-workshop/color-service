@@ -1,0 +1,47 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: build-quarkus-app-native
+spec:
+  params:
+    - name: contextDir
+      description: the context dir within source
+      default: .
+    - name: mavenMirrorUrl
+      description: the maven mirrror url
+      default: https://repo.maven.apache.org/maven2/
+    - name: buildId
+      description: ID for the build
+  resources:
+    inputs:
+      - name: source
+        type: git
+  steps:
+    - name: build-sources
+      image: quay.io/quarkus/ubi-quarkus-native-s2i:20.2.0-java11
+      workingDir: "/workspace/source/$(inputs.params.contextDir)"
+      command:
+        - mvn
+      args:
+        - -Dquarkus.container-image.push=true
+        - -Dmaven.repo.local=/m2-cache
+        - "-Dquarkus.container-image.additional-tags=$(inputs.params.buildId)"
+        - -Pnative
+        - clean
+        - package
+        - sonar:sonar
+      resources:
+        requests:
+          memory: "2Gi"
+          cpu: "1000m"
+        limits:
+          memory: "6Gi"
+          cpu: "2000m"
+      volumeMounts:
+        - mountPath: /m2-cache
+          name: m2-cache
+  volumes:
+    - name: m2-cache
+      persistentVolumeClaim:
+        claimName: m2-cache

@@ -1,0 +1,30 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  annotations:
+    haproxy.router.openshift.io/balance: roundrobin
+    haproxy.router.openshift.io/disable_cookies: "true"
+  labels:
+    app: color-service
+    app.kubernetes.io/component: color-service
+    app.kubernetes.io/instance: color-service
+    app.kubernetes.io/name: color-service
+    app.kubernetes.io/part-of: color-service
+    app.openshift.io/runtime: quarkus
+    app.openshift.io/runtime-version: latest
+  name: color-service
+spec:
+  port:
+    targetPort: 8080-tcp
+  to:
+    kind: Service
+    name: color-service-blue
+    weight: 50
+  alternateBackends:
+    - kind: Service
+      name: color-service-green
+      weight: 50
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+  wildcardPolicy: None

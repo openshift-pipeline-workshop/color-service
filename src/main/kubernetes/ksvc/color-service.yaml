@@ -1,0 +1,43 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  annotations:
+    app.openshift.io/vcs-ref: refs/heads/develop
+    app.openshift.io/vcs-uri: https://github.com/jritter/color-service
+    prometheus.io/port: "8080"
+    prometheus.io/scrape: "true"
+  creationTimestamp: null
+  labels:
+    app.openshift.io/runtime: quarkus
+  name: color-service
+spec:
+  template:
+    metadata:
+      annotations:
+        app.openshift.io/vcs-ref: refs/heads/develop
+        app.openshift.io/vcs-uri: https://github.com/jritter/color-service
+        client.knative.dev/user-image: quay.io/jritter/color-service
+        prometheus.io/port: "8080"
+        prometheus.io/scrape: "true"
+      creationTimestamp: null
+      labels:
+        app.openshift.io/runtime: quarkus
+      name: color-service-yjhbq-1
+    spec:
+      containerConcurrency: 0
+      containers:
+      - image: quay.io/jritter/color-service
+        name: user-container
+        readinessProbe:
+          successThreshold: 1
+          tcpSocket:
+            port: 0
+        resources:
+          limits:
+            cpu: 200m
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+      timeoutSeconds: 300
+status: {}

@@ -1,0 +1,11 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineResource
+metadata:
+  name: color-service-git
+spec:
+  type: git
+  params:
+    - name: url
+      value: https://github.com/jritter/color-service
+    - name: revision
+      value: develop
