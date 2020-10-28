@@ -38,7 +38,7 @@ $ podman run -p 8080:8080 -it quay.io/jritter/color-service
 ## Deploy color-service using Knative
 
 ```
-$ kn service create color-service --image quay.io/jritter/color-service --request cpu=100m,memory=256Mi --limit cpu=200m,memory=512Mi -l app.openshift.io/runtime=quarkus -a app.openshift.io/vcs-ref=refs/heads/develop -a app.openshift.io/vcs-uri=https://github.com/jritter/color-service
+$ kn service create color-service --image quay.io/jritter/color-service --request cpu=100m,memory=256Mi --limit cpu=200m,memory=512Mi -l app.openshift.io/runtime=quarkus -a app.openshift.io/vcs-ref=refs/heads/develop -a app.openshift.io/vcs-uri=https://github.com/jritter/color-service -a prometheus.io/scrape=true -a prometheus.io/port=8080 -a autoscaling.knative.dev/target=20 -a autoscaling.knative.dev/metric=rps
 ```
 
 ## Change the color using Knative
