@@ -31,7 +31,7 @@ spec:
       - name: STATE
         value: pending
       - name: TARGET_URL
-        value: https://console-openshift-console.apps.shared-na4.na4.openshift.opentlc.com/k8s/ns/jritter-blue-green/tekton.dev~v1beta1~PipelineRun
+        value: https://console-openshift-console.apps.shared-na4.na4.openshift.opentlc.com/k8s/ns/color-service-dev/tekton.dev~v1beta1~PipelineRun
     taskRef:
       kind: Task
       name: github-set-status

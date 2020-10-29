@@ -26,11 +26,10 @@ spec:
       args:
         - -Dquarkus.container-image.push=true
         - -Dmaven.repo.local=/m2-cache
-        - "-Dquarkus.container-image.additional-tags=$(inputs.params.buildId)"
+        - "-Dquarkus.container-image.additional-tags=$(inputs.params.buildId),latest"
         - -Pnative
         - clean
         - package
-        - sonar:sonar
       resources:
         requests:
           memory: "2Gi"
