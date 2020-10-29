@@ -1,0 +1,90 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: build-quarkus-app
+spec:
+  resources:
+  - name: source
+    type: git
+  params:
+  - name: buildId
+    type: string
+    description: ID of build
+  - name: repo-full-name
+    type: string
+    description: Repository Name
+  - name: service-name
+    type: string
+    description: Service Name
+  - name: revision
+    type: string
+    description: Revision of Build
+  tasks:
+  - name: update-github-status-pending
+    params:
+      - name: REPO_FULL_NAME
+        value: "$(params.repo-full-name)"
+      - name: SHA
+        value: "$(params.revision)"
+      - name: DESCRIPTION
+        value: "Build has started"
+      - name: STATE
+        value: pending
+      - name: TARGET_URL
+        value: https://console-openshift-console.apps.shared-na4.na4.openshift.opentlc.com/k8s/ns/color-service-dev/tekton.dev~v1beta1~PipelineRun
+    taskRef:
+      kind: Task
+      name: github-set-status
+  - name: maven-build
+    params:
+    - name: contextDir
+      value: .
+    - name: mavenMirrorUrl
+      value: https://repo.maven.apache.org/maven2/
+    - name: buildId
+      value: "$(params.buildId)"
+    resources:
+      inputs:
+      - name: source
+        resource: source
+    taskRef:
+      kind: Task
+      name: build-quarkus-app
+    runAfter:
+    - update-github-status-pending
+  - name: update-github-status-success
+    params:
+      - name: REPO_FULL_NAME
+        value: "$(params.repo-full-name)"
+      - name: SHA
+        value: "$(params.revision)"
+      - name: DESCRIPTION
+        value: "Build completed successfully"
+      - name: STATE
+        value: success
+      - name: TARGET_URL
+        value: https://console-openshift-console.apps.shared-na4.na4.openshift.opentlc.com/k8s/ns/jritter-blue-green/tekton.dev~v1beta1~PipelineRun
+    taskRef:
+      kind: Task
+      name: github-set-status
+    runAfter:
+    - maven-build
+  - name: deploy-application
+    params:
+    - name: ARGS
+      value:
+      - "service"
+      - "create"
+      - "$(params.service-name)"
+      - "--force"
+      - "--image=quay.io/jritter/$(params.service-name):$(params.buildId)"
+      - "--request=cpu=100m,memory=256Mi"
+      - "--limit=cpu=200m,memory=512Mi"
+      - "--label=app.openshift.io/runtime=quarkus"
+      - "--annotation=app.openshift.io/vcs-ref=$(params.revision)"
+      - "--annotation=app.openshift.io/vcs-uri=https://github.com/jritter/color-service"
+    taskRef:
+      kind: Task
+      name: kn
+    runAfter:
+    - maven-build

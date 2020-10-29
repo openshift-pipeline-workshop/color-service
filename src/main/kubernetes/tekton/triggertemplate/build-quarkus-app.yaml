@@ -1,0 +1,45 @@
+apiVersion: triggers.tekton.dev/v1alpha1 
+kind: TriggerTemplate 
+metadata:
+  name: build-quarkus-app
+spec:
+  params: 
+  - name: git-repo-url
+    description: The git repository url
+  - name: git-revision
+    description: The git revision
+    default: master
+  - name: git-repo-name
+    description: The name of the deployment to be created / patched
+  - name: git-repo-full-name
+    description: The full name of the repository
+
+  resourcetemplates: 
+  - apiVersion: tekton.dev/v1beta1
+    kind: PipelineRun
+    metadata:
+      name: build-quarkus-app-$(params.git-repo-name)-$(uid)
+    spec:
+      pipelineRef:
+        name: build-quarkus-app
+      resources:
+      - name: source
+        resourceSpec:
+          type: git
+          params:
+          - name: revision
+            value: $(params.git-revision)
+          - name: url
+            value: $(params.git-repo-url)
+      params:
+        - name: buildId
+          value: "$(uid)"
+        - name: revision
+          value: $(params.git-revision)
+        - name: repo-full-name
+          value: $(params.git-repo-full-name)
+        - name: service-name
+          value: $(params.git-repo-name)
+      serviceAccountName: pipeline
+      timeout: 1h0m0s
+

@@ -1,0 +1,22 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: kn
+spec:
+  params:
+  - default: gcr.io/knative-releases/knative.dev/client/cmd/kn:latest
+    description: kn CLI container image to run this task
+    name: kn-image
+    type: string
+  - default:
+    - help
+    description: kn CLI arguments to run
+    name: ARGS
+    type: array
+  steps:
+  - args:
+    - $(params.ARGS)
+    command:
+    - /ko-app/kn
+    image: $(params.kn-image)
+    name: kn
