@@ -3,11 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.riju.demo</groupId>
   <artifactId>color-service</artifactId>
-  <version>1.0.4</version>
+  <version>1.0.5-SNAPSHOT</version>
   <scm>
     <connection>scm:git:https://github.com/jritter/color-service.git</connection>
     <url>https://github.com/jritter/color-service.git</url>
-    <tag>v1.0.4</tag>
+    <tag>HEAD</tag>
   </scm>
   <properties>
     <compiler-plugin.version>3.8.1</compiler-plugin.version>
