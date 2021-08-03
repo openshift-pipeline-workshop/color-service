@@ -1,0 +1,97 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: color-service
+spec:
+  description: >-
+    This Pipeline Builds and deploys the color service
+  params:
+    - name: image-name 
+      description: The fully qualified image name e.g example.com/tekton-tutorial/greeter
+      default: image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/$(params.service-name):$(tasks.git-clone.results.commit)
+    - name: context-dir
+      description: >-
+        The application framework to use, value can be either quarkus or springboot
+      default: .
+    - name: service-name
+      description: The Knative Service name
+      default: color-service
+    - name: git-repo-url
+      description: The git Repo of the Java Application
+      default: https://github.com/openshift-pipeline-workshop/color-service.git
+    - name: git-repo-revision
+      description: The git revision to use
+      default: develop
+  workspaces:
+    - name: source
+    - name: maven-repo
+  tasks:
+    - name: clone-sources
+      taskRef:
+        name: git-clone
+        kind: ClusterTask
+      params:
+        - name: url
+          value: $(params.git-repo-url)
+        - name: revision
+          value: $(params.git-repo-revision)
+        # just to do a fresh clone, as we already have the directory cloned
+        # to reuse it we can exlude this step
+        - name: deleteExisting
+          value: 'true'
+      workspaces:
+        - name: output
+          workspace: source
+    - name: build-java-test
+      taskRef:
+        name: maven
+      runAfter:
+        - clone-sources
+      params:
+        - name: GOALS
+          value: ['-pl', '$(params.context-dir)', '-B', 'clean', 'test']
+      workspaces:
+        - name: maven-repo
+          workspace: maven-repo
+        - name: source
+          workspace: source
+    - name: build-java-app
+      taskRef:
+        name: maven
+      runAfter:
+        - build-java-test
+      params:
+        - name: GOALS
+          value:
+            [
+              '-pl',
+              '$(params.context-dir)',
+              '-B',
+              '-DskipTests',
+              'clean',
+              'package',
+            ]
+      workspaces:
+        - name: maven-repo
+          workspace: maven-repo
+        - name: source
+          workspace: source
+    - name: build-java-app-image
+      taskRef:
+        name: buildah
+        kind: ClusterTask
+      runAfter:
+        - build-java-app
+      params:
+        - name: CONTEXT
+          value: '$(params.context-dir)'
+        - name: IMAGE
+          value: '$(params.image-name)'
+        # since pushing to internal registry we skip TLS verify
+        - name: TLSVERIFY
+          value: 'false'
+        - name: DOCKERFILE
+          value: ./src/main/docker/Dockerfile.jvm
+      workspaces:
+        - name: source
+          workspace: source

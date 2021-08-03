@@ -6,6 +6,6 @@ spec:
   type: git
   params:
     - name: url
-      value: https://github.com/jritter/color-service
+      value: https://github.com/openshift-pipeline-workshop/color-service
     - name: revision
       value: develop

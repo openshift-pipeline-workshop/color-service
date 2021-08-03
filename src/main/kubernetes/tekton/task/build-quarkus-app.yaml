@@ -1,41 +1,44 @@
----
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
+  creationTimestamp: "2021-08-02T14:40:52Z"
+  generation: 3
   name: build-quarkus-app
+  namespace: color-service
+  resourceVersion: "316985"
+  uid: 89c862eb-5e66-4752-8e24-73df6aac3184
 spec:
   params:
-    - name: contextDir
-      description: the context dir within source
-      default: .
-    - name: mavenMirrorUrl
-      description: the maven mirrror url
-      default: https://repo.maven.apache.org/maven2/
-    - name: buildId
-      description: ID for the build
+  - default: .
+    description: the context dir within source
+    name: contextDir
+    type: string
+  - default: https://repo.maven.apache.org/maven2/
+    description: the maven mirrror url
+    name: mavenMirrorUrl
+    type: string
   resources:
     inputs:
-      - name: source
-        type: git
+    - name: source
+      type: git
+  workspaces:
+    - name: app
   steps:
-    - name: build
-      image: docker.io/maven:3.6.3-openjdk-11-slim
-      workingDir: "/workspace/source/$(inputs.params.contextDir)"
-      command:
-        - mvn
-      args:
-        - -Dquarkus.container-image.push=true
-        - -Dmaven.repo.local=/m2-cache
-        - -Dsonar.host.url=http://sonarqube:9000
-        - "-Dquarkus.container-image.additional-tags=$(inputs.params.buildId),latest"
-        - clean
-        - package
-        - sonar:sonar
-      volumeMounts:
-        - mountPath: /m2-cache
-          name: m2-cache
+  - args:
+    - -Dquarkus.container-image.push=false
+    - -Dmaven.repo.local=/m2-cache
+    - clean
+    - package
+    command:
+    - mvn
+    image: gcr.io/cloud-builders/mvn@sha256:57523fc43394d6d9d2414ee8d1c85ed7a13460cbb268c3cd16d28cfb3859e641
+    name: build
+    resources: {}
+    volumeMounts:
+    - mountPath: /m2-cache
+      name: m2-cache
+    workingDir: /workspace/source/$(inputs.params.contextDir)
   volumes:
-    - name: m2-cache
-      persistentVolumeClaim:
-        claimName: m2-cache
-
+  - name: m2-cache
+    persistentVolumeClaim:
+      claimName: m2-cache
