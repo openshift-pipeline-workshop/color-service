@@ -97,21 +97,20 @@ spec:
           workspace: source
     - name: deploy-application
       taskRef:
-        name: helm-upgrade-from-source
-        kind: ClusterTask
+        name: helm-deploy
       runAfter:
         - build-container-image
       params:
-        - name: charts_dir
-          value: ./helm/$(params.service-name)
-        - name: release_namespace
+        - name: CHART_NAME
+          value: $(params.service-name)
+        - name: RELEASE_NAMESPACE
           value: $(context.pipelineRun.namespace)
-        - name: release_version
-          value: '1.0.0'
-        - name: release_name
+        - name: APP_VERSION
+          value: $(tasks.maven-package.results.version)
+        - name: RELEASE_NAME
           value: $(params.service-name)-$(params.git-repo-revision)
         # since pushing to internal registry we skip TLS verify
-        - name: overwrite_values
+        - name: OVERWRITE_VALUES
           value: image.repository=image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/$(params.service-name),image.tag=$(tasks.git-clone.results.commit)
       workspaces:
         - name: source

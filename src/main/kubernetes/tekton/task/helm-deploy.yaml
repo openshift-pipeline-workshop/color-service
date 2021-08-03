@@ -1,0 +1,47 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: helm-deploy
+spec:
+  workspaces:
+  - name: source
+  params:
+  - description: Specify chart name that will be deployed
+    name: CHART_NAME
+    type: string
+  - description: Specify the directory where the helm charts are located
+    name: CHARTS_DIR
+    type: string
+    default: helm
+  - default: helm-release
+    description: The helm release name
+    name: RELEASE_NAME
+    type: string
+  - default: ""
+    description: The helm release namespace
+    name: RELEASE_NAMESPACE
+    type: string
+  - default: ""
+    description: 'Specify the values you want to overwrite, comma separated: autoscaling.enabled=true,replicas=1'
+    name: OVERWRITE_VALUES
+    type: string
+  - default: "1.0.0"
+    description: 'appVersion which will be used to package the helm chart'
+    name: APP_VERSION
+    type: string
+  - default: docker.io/lachlanevenson/k8s-helm@sha256:5c792f29950b388de24e7448d378881f68b3df73a7b30769a6aa861061fd08ae
+    description: Specify a specific helm image
+    name: HELM_IMAGE
+    type: string
+  steps:
+  - image: $(params.HELM_IMAGE)
+    name: upgrade-from-repo
+    workingDir: $(workspaces.source.path)
+    script: |
+      echo "replace version of helm chart to"
+      echo "current installed helm releases"
+      helm list --namespace "$(params.RELEASE_NAMESPACE)"
+      echo "package helm chart..."
+      helm package ./$(params.CHARTS_DIR)/$(params.CHART_NAME) --app-version $(params.APP_VERSION) --version $(params.APP_VERSION)
+      echo "installing helm chart..."
+      helm upgrade --wait --install --namespace "$(params.RELEASE_NAMESPACE)" "$(params.RELEASE_NAME)" "$(params.CHART_NAME)-$(params.APP_VERSION).tgz" --debug --set "$(params.OVERWRITE_VALUES)"

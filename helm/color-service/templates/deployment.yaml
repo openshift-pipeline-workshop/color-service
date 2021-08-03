@@ -4,6 +4,7 @@ metadata:
   name: {{ include "color-service.fullname" . }}
   labels:
     {{- include "color-service.labels" . | nindent 4 }}
+    app.openshift.io/runtime: quarkus
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -45,6 +46,9 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            - name: COLOR_SERVICE_COLOR
+              value: {{ .Values.color }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
