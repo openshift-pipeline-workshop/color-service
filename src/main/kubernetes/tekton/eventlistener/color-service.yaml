@@ -1,11 +1,11 @@
 apiVersion: triggers.tekton.dev/v1alpha1
 kind: EventListener
 metadata:
-  name: quarkus-app
+  name: color-service
 spec:
   serviceAccountName: pipeline
   triggers:
   - bindings:
-    - name: quarkus-app
+    - ref: color-service
     template:
-      name: build-quarkus-app
+      ref: color-service

@@ -14,7 +14,7 @@ spec:
         The application framework to use, value can be either quarkus or springboot
       default: .
     - name: service-name
-      description: The Knative Service name
+      description: The name of the service
       default: color-service
     - name: git-repo-url
       description: The git Repo of the Java Application
