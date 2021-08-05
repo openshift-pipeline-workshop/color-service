@@ -5,7 +5,16 @@ metadata:
 spec:
   serviceAccountName: pipeline
   triggers:
-  - bindings:
+  - name: color-service-push
+    interceptors:
+    - ref:
+        name: "github"
+        kind: ClusterInterceptor
+        apiVersion: triggers.tekton.dev
+      params:
+      - name: "eventTypes"
+        value: ["push"]
+    bindings:
     - ref: color-service
     template:
       ref: color-service

@@ -15,7 +15,7 @@ spec:
   - apiVersion: tekton.dev/v1beta1
     kind: PipelineRun
     metadata:
-      name: color-service-$(params.git-repo-name)-$(uid)
+      generateName: color-service-
     spec:
       pipelineRef:
         name: color-service
@@ -36,7 +36,7 @@ spec:
       - name: source
         volumeClaimTemplate:
           metadata:
-            name: color-service-
+            generateName: color-service-
           spec:
             accessModes:
             - ReadWriteOnce

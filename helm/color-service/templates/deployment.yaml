@@ -5,6 +5,25 @@ metadata:
   labels:
     {{- include "color-service.labels" . | nindent 4 }}
     app.openshift.io/runtime: quarkus
+    {{- if .Values.vcsRef }}
+    vcs-ref: {{ .Values.vcsRef | default "" }}
+    {{- end }}
+    {{- if .Values.vcsUri }}
+    vcs-uri: {{ .Values.vcsUri | default "" }}
+    {{- end }}
+    {{- if .Values.vcsCommit }}
+    vcs-commit: {{ .Values.vcsCommit | default "" }}
+    {{- end }}
+    {{- if .Values.pipeline }}
+    pipeline: {{ .Values.pipeline | default "" }}
+    {{- end }}
+  annotations:
+    {{- if .Values.vcsRef }}
+    app.openshift.io/vcs-ref: {{ .Values.vcsRef | default "" }}
+    {{- end }}
+    {{- if .Values.vcsUri }}
+    app.openshift.io/vcs-uri: {{ .Values.vcsUri | default "" }}
+    {{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -38,12 +57,16 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
-              port: http
+              path: /health
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 3
           readinessProbe:
             httpGet:
-              path: /
-              port: http
+              path: /health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 3
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
