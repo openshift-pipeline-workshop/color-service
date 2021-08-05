@@ -5,18 +5,6 @@ metadata:
   labels:
     {{- include "color-service.labels" . | nindent 4 }}
     app.openshift.io/runtime: quarkus
-    {{- if .Values.vcsRef }}
-    vcs-ref: {{ .Values.vcsRef | default "" }}
-    {{- end }}
-    {{- if .Values.vcsUri }}
-    vcs-uri: {{ .Values.vcsUri | default "" }}
-    {{- end }}
-    {{- if .Values.vcsCommit }}
-    vcs-commit: {{ .Values.vcsCommit | default "" }}
-    {{- end }}
-    {{- if .Values.pipeline }}
-    pipeline: {{ .Values.pipeline | default "" }}
-    {{- end }}
   annotations:
     {{- if .Values.vcsRef }}
     app.openshift.io/vcs-ref: {{ .Values.vcsRef | default "" }}
