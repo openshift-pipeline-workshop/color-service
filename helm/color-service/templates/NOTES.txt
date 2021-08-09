@@ -1,1 +1,13 @@
 Welcome to the color service version {{ .Chart.Version }}
+
+{{- if .Values.vcsRef }}
+Git Ref: {{ .Values.vcsRef }}
+{{- end }}
+
+{{- if .Values.vcsCommit }}
+Git Commit: {{ .Values.vcsCommit }}
+{{- end }}
+
+{{- if .Values.vcsUri }}
+Git URI: {{ .Values.vcsUri }}
+{{- end }}
